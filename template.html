@@ -1,0 +1,383 @@
+<!--tag buttons style-->
+<style>
+.btn-tag {
+    margin-bottom: 5px;
+    text-transform: capitalize;
+  }
+
+  .btn-tag.connections {
+    background-color: rgba(255, 255, 157, 0.5);
+  }
+
+  .btn-tag.connections.active {
+    background-color: rgba(255, 255, 157, 1); font-weight: bold;
+  }
+
+</style>
+
+<!--End tag buttons style-->
+
+
+<div class="row">
+  <!-- Success and Error Messages for the user -->
+  <div class="col-md-12">
+    <!-- Success alert box -->
+    <div id="success" class="alert alert-success" style="display:none;">
+      <a class="close">×</a><strong>Ben fatto!</strong> La tua risposta è stata salvata con successo.
+    </div>
+    <!-- Task completed alert box -->
+    <div id="taskcompleted" class="alert alert-info" style="display:none;">
+      <strong>La task è stata completata</strong> Grazie!
+    </div>
+    <!-- Task loading alert box -->
+    <div id="loadingTask" class="alert alert-info">
+      <strong>Carico...</strong>
+    </div>
+    <!-- Task completed alert box -->
+    <div id="finish" class="alert alert-success" style="display:none;">
+      <strong>Congratulazioni!</strong> Hai partecipato a tutte le tasks disponibili!
+      <br/>
+      <div class="alert-actions">
+        <a class="btn small" href="/">Torna indietro</a>
+        <a class="btn small" href="/project/category/featured/">o, partecipa ad altri progetti</a>
+      </div>
+    </div>
+    <!-- Error alert box -->
+    <div id="error" class="alert alert-danger" style="display:none;">
+      <a class="close">×</a>
+      <strong>Error!</strong> Qualcosa è andato storto, perfavore contatta gli amministratori del sito
+    </div>
+    <!-- Old Browser alert box -->
+    <div id="oldBrowser" class="alert alert-info" style="display:none;">
+      <a class="close">×</a>
+      <p><strong>Ci dispiace!</strong> Il tuo web browser non supporta questa applicazione.<p>
+        <div class="alert-actions">
+          <a class="btn small" href="/app">Per favore prova un altro progetto </a>
+        </div>
+      </div>
+    </div><!-- End of span8 col-md-offset-2-->
+  </div><!-- End of Row-->
+
+
+  <div class="row">
+    <div class="skeleton col-md-12">
+      <h1 class="lead" id="question"></h1>
+      <button class="btn btn-info btn-xs" data-toggle="modal" data-target="#myModal">
+        <i class="glyphicon glyphicon-eye-open"></i> Tutorial
+      </button>
+      <p style="margin-top:10px;">
+        <h2 class="lead display-5 text-success"> Indica il luogo associato al tuo ricordo nel quartiere odierno di San Donato - Novoli, Firenze </h2>
+        <div>
+
+          <div id="map" class="mb-3"></div>
+          <p class="text-info"><i class="fa fa-map-marker"></i> Posizione del luogo che ricordi
+            <span id="lat"></span> <span id="lon"></span>
+          </p>
+        </div>
+
+        <!--Connections-->
+        <div class="skeleton row">
+          <!-- Start Skeleton Row-->
+          <div class="col-md-6 ">
+            <!-- Start of Question and Submission DIV (column) -->
+            <p style="margin-top:10px;">
+              Seleziona le tags che descrivono il tuo legame con l'area di San Donato - Novoli:
+            </p>
+
+            <div id="connections">
+              <button class="btn btn-sm btn-default btn-tag connections" value="family">Famiglia</button>
+              <button class="btn btn-sm btn-default btn-tag connections" value="friends">Amici</button>
+              <button class="btn btn-sm btn-default btn-tag connections" value="residence">Residenza</button>
+              <button class="btn btn-sm btn-default btn-tag connections" value="work">Lavoro</button>
+              <button class="btn btn-sm btn-default btn-tag connections" value="leisure">Svago</button>
+              <button class="btn btn-sm btn-default btn-tag connections" value="religion">Religione</button>
+              <button class="btn btn-sm btn-default btn-tag connections" value="history">Interesse storico</button>
+            </div>
+
+            <form id="magicData" role="form">
+              <div class="row">
+                <div class="skeleton col-md-12">
+                  <div class="form-group">
+                    <p style="margin-top:10px;">
+                     Se nessuna tag descrive il tuo legame con l'area, per favore usa la casella qui sotto.
+                     </p>
+                    <p>
+                        <textarea class="form-control" rows="1" id="custom" name="custom"></textarea>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+  <!--End Connections-->
+
+        <form id="magicData" role="form">
+          <div class="row">
+            <div class="skeleton col-md-12">
+              <div class="form-group">
+                <h3 class="lead">Memory Box</h3>
+                <p>
+                  <textarea class="form-control" rows="5" id="memory" name="memory"
+                  placeholder="Scrivi qui perché questo luogo è significativo per te, per esempio condividendo una storia o un ricordo"></textarea>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-success btn-answer" value="Yes">
+              <i class="fa fa-check"></i> Salva il luogo e il tuo ricordo
+            </button>
+          </div>
+        </form>
+      </div>
+      <!-- The data entry section using html table -->
+      <div class="col-md-12 my-3">
+
+        <!-- Feedback items for the user -->
+        <p>
+          You are working now on task: <span id="taskid" class="badge badge-warning badge-lg">#</span>
+        </p>
+        <p>
+          You have completed: <span id="done" class="badge badge-info"></span> tasks from
+          <!-- Progress bar for the user -->
+          <span id="total" class="badge badge-dark"></span>
+        </p>
+        <div class="progress progress-striped">
+          <div id="progress" rel="tooltip" title="#" class="progress-bar" role="progressbar"
+          style="width: 0%;"></div>
+        </div>
+        <!-- End of feedback row -->
+      </div>
+      <!-- End of the section -->
+    </div>
+
+
+
+    <style media="screen">
+      #map { height: 500px; width:100%;}
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+    <script src="/static/js/vendor/jquery.serializeJSON.min.js" type="text/javascript"></script>
+
+    <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal header -->
+          <div class="modal-header">
+            <h3>Come condividere il tuo ricordo</h3>
+          </div>
+
+          <!-- Step 1 of the tutorial -->
+          <div id="0" class="modal-body" style="display:none">
+            <p style="text-align: justify;">
+              Questa applicazione consente di raccogliere esperienze attuali e ricordi passati relativi all'area di San Donato - Novoli, Firenze.
+            </p>
+            <p style="text-align: justify;">
+              Ti verrà presentata una mappa dell'area. Se riconosci un luogo o un edificio per te significativo, fai clic su di esso. Verrà aggiunto un indicatore alla mappa.
+            </p>
+                <p style="text-align: justify;">
+                  Se hai aggiunto l'indicatore nel posto sbagliato per errore, non preoccuparti, puoi spostarlo facendo clic su di esso.
+                   </p>
+                <img src="https://blog.micropasts.org/wp-content/uploads/2021/09/tut1-e1630514890178.jpg" />
+            </div>
+
+            <!-- Step 2 of the tutorial -->
+            <div id="1" class="modal-body" style="display:none">
+              <p style="text-align: justify;">
+                Per favore indica il tuo legame con l'area di San Donato - Novoli selezionando uno dei tag suggeriti, oppure utilizzando la casella sottostante se nessuno di essi lo descrive.
+              <p style="text-align: justify;">
+                Quindi, usa la Memory Box per condividere la tua storia. Innanzitutto, digita il nome del luogo/edificio, se lo conosci, e una data indicativa o più date (ad esempio "1980" o "Estate 2015") associate alla tua esperienza. Infine, scrivi perché quel luogo è importante per te.
+                <p>
+                  <img src="https://blog.micropasts.org/wp-content/uploads/2021/08/tutorial2-e1628714096513.jpg" />
+                </p>
+              </div>
+
+              <!-- Step 3 of the tutorial -->
+              <div id="2" class="modal-body" style="display:none">
+                <p style="text-align: justify;">
+                  Infine, premi il pulsante verde "Salva il luogo e i tuoi ricordi" per inviare la tua storia!
+                  <p>
+                    <img src="https://blog.micropasts.org/wp-content/uploads/2021/07/submit-e1626898527956.png" />
+                  </p>
+                  <p style="text-align: justify;">
+                    Contattaci all'indirizzo deepcitiesapp@gmail.com se hai commenti o domande sull'app o sul nostro progetto.
+                  </p>
+                </div>
+                <!-- End of stepped modal body -->
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <a id="prevBtn" href="#" onclick="showStep('prev')" class="btn btn-default">Indietro</a>
+                  <a id="nextBtn" href="#" onclick="showStep('next')" class="btn btn-success">Avanti</a>
+                  <a id="startContrib" data-dismiss="modal" href="../urban/newtask" class="btn btn-primary"
+                  style="display:none"/><i class="glyphicon glyphicon-thumbs-up"></i> Iniziamo!</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <script type="text/javascript">
+            var step = -1;
+            function showStep(action) {
+              $("#" + step).hide();
+              if (action == 'next') {
+                step = step + 1;
+              }
+              if (action == 'prev') {
+                step = step - 1;
+              }
+              if (step == 0) {
+                $("#prevBtn").hide();
+                $("#nextBtn").show();
+              }
+              else {
+                $("#prevBtn").show();
+              }
+              if (step == 2 ) {
+                $("#nextBtn").hide();
+                $("#prevBtn").show();
+                $("#startContrib").show();
+              }
+              $("#" + step).show();
+            }
+            showStep('next');
+            $("#myModal").modal('show');
+          </script>
+
+          <script>
+
+            var Latitude;
+            var Longitude;
+            var Marker;
+            var Connections;
+            var map = L.map('map',{dragging:false, scrollWheelZoom:false, zoomControl: false}).setView([43.7935, 11.2248], 16);
+            L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            var onDrag = function (e) {
+              var latlng = Marker.getLatLng();
+              document.getElementById('lat').innerHTML = ' Latitude: ' + latlng.lat + ',';
+              document.getElementById('lon').innerHTML = ' Longitude: ' + latlng.lng;
+              Latitude = latlng.lat ;
+              Longitude = latlng.lng;
+              console.log(latlng);
+              console.log(Latitude);
+              console.log(Longitude);
+            };
+            var onClick = function(e) {
+              map.off('click', onClick);
+              Marker = L.marker(e.latlng,{draggable: true}).addTo(map);
+              var lat = e.latlng.lat;
+              var lon = e.latlng.lng;
+              Latitude = lat;
+              Longitude = lon;
+              $('#lat').html('').append(' Latitude: ' + lat + ',');
+              $('#lon').html('').append(' Longitude: ' + lon);
+              console.log("Lat, Lon : " + lat + ", " + lon);
+              console.log(Latitude);
+              console.log(Longitude);
+              Marker.on('drag', onDrag);
+            };
+            map.on('click', onClick);
+
+
+            // This part of the script loads the user's progress through the project
+
+            function loadUserProgress() {
+              pybossa.userProgress('Flo').done(function(data) {
+                console.log(data);
+                console.log("Total answers done for user: " + data.done);
+                var pct = Math.round((data.done * 100) / data.total);
+                $("#progress").css("width", pct.toString() + "%");
+                $("#progress").attr("title", pct.toString() + "% completed!");
+                $("#progress").tooltip({ 'placement' : 'left' });
+                $("#total").text(data.total);
+                $("#done").text(data.done);
+                $('a[rel]').tooltip({'placement' : 'left'});
+              });
+            }
+
+            pybossa.taskLoaded(function(task, deferred) {
+            if (! $.isEmptyObject(task)) {
+             $('#loadingTask').hide();
+                loadUserProgress();
+                deferred.resolve(task);
+              } else {
+             deferred.resolve(task);
+             }
+             });
+
+                            function toggleBtn(btn, task) {
+                              var userCon = $(btn).attr("value");
+                              Connections = userCon;
+                              $('#userCon').html('').append('Connections:' + userCon);
+                              console.log("userCon:" + userCon);
+                              console.log(Connections);
+                              if ($(btn).hasClass('active')) {
+                                $(btn).removeClass('active');
+                                }
+                              else {
+                                $(btn).addClass('active');
+                                //console.log(task.answer);
+                              }
+                              };
+
+                 // This part presents the task and then saves the answers
+
+                 pybossa.presentTask(function(task, deferred) {
+                   if (!$.isEmptyObject(task)) {
+                     console.log(task)
+                     $('#question').html(task.info.question);
+                     $('#taskid').html(task.id);
+                     $('#city').html('').append(task.info.city);
+                     Connections = '[]';
+                     var handleBtn = function(evt) {
+                     toggleBtn(this, task);
+                   };
+
+                   $('.btn-tag').off('click').on('click', handleBtn);
+
+                   $('.btn-answer').off('click').on('click', function(evt) {
+                     evt.preventDefault();
+                     var answer = $(evt.target).attr("value");
+                     console.log(answer)
+                     if ( typeof answer != 'undefined') {
+                       task.answer = $("#magicData").serializeJSON();
+                       task.answer.lat = Latitude;
+                       task.answer.lon = Longitude;
+                       task.answer.coordinates = Latitude + ',' + Longitude;
+                       task.answer.connections = Connections;
+                       console.log(task.answer);
+                       pybossa.saveTask(task.id, task.answer).done(function() {
+                         $("html, body").animate( {scrollTop : 0 }, "slow");
+                         $("#success").fadeIn(500).fadeOut(500);
+                         $("#loading").fadeIn(500).fadeOut(500);
+                         $('#magicData')[0].reset();
+                         deferred.resolve();
+                         $('#lat').empty();
+                         $('#lon').empty();
+                         Connections = '[]';
+                         map.removeLayer(Marker);
+                         map.invalidateSize();
+                         map.on('click', onClick);
+                         $('.btn-tag.connections').removeClass('active');
+                       });
+                     } else {
+                       $("#error").show();
+                     }
+                   });
+                   $("#loading").hide();
+                 } else {
+                   $(".skeleton").hide();
+                   $("#loading").hide();
+                   $("#finish").fadeIn(500);
+                 }
+               });
+               pybossa.run('Flo');
+               </script>
